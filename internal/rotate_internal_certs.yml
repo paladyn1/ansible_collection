@@ -1,19 +1,21 @@
 ---
-## KER - 3/2/2022
+## KER - 6/22/2022
 - name: Rotate Certs on internal gateway servers
   hosts: all
   gather_facts: false
   become: true
 
   tasks:
-    - name: Remove old cert
-      ansible.builtin.file:
-        dest: /etc/nginx/ssl/wildcard-clearsense_com.bundle.crt
-        state: absent
+    - name: Backup old cert files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/nginx/ssl/wildcard-clearsense_com.bundle.crt
+          dest: /etc/nginx/ssl/wildcard-clearsense_com.bundle.old
+        when: check_file_name.stat.exists
 
     - name: Copy file with owner and permissions
       copy:
-        src: /files/wildcard-clearsense_com.bundle.crt
+        src: /files/wildcard-clearsensecloud_com.bundle.crt
         dest: /etc/nginx/ssl/wildcard-clearsense_com.bundle.crt
         owner: root
         group: root

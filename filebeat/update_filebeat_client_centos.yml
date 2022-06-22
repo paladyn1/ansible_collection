@@ -1,0 +1,38 @@
+---
+## KER - 6/22/2022
+- name: Updates filebeat client on Centos servers where applicable
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Stopping filebeat services
+      ansible.builtin.service:
+        name: filebeat
+        state: stopped
+
+    - name: Backup config files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/filebeat/filebeat.yml
+          dest: /etc/filebeat/filebeat.ansible_bkp
+        when: check_file_name.stat.exists
+
+    - name: Upgrades filebeat to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
+      yum:
+        name: filebeat
+        enablerepo: elasticsearch
+        state: latest
+
+    - name: Backup rotate config file back
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/filebeat/filebeat.ansible_bkp
+          dest: /etc/filebeat/filebeat.yml
+        when: check_file_name.stat.exists
+
+    - name: Starting filebeat services
+      ansible.builtin.service:
+        name: filebeat
+        state: started
+

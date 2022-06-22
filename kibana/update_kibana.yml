@@ -1,0 +1,54 @@
+---
+## KER - 6/21/2022
+- name: kibana version update
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Stopping kibana services
+      ansible.builtin.service:
+        name: kibana
+        state: stopped
+
+    - name: Backup config files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/kibana/kibana.yml
+          dest: /etc/kibana/kibana.yml.ansible_bkp
+        when: check_file_name.stat.exists
+
+    - name: Rotate repo file to enable kibana downloads/updates
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/yum.repo.d/elasticsearch.repo.bkp
+          dest: /etc/yum.repo.d/elasticsearch.repo
+        when: check_file_name.stat.exists
+
+    - name: Upgrades kibana to latest version available to repo in /etc/yum.repo.d/kibana.repo on target machine
+        yum:
+          name: kibana
+          enablerepo: kibana
+          state: latest
+
+    - name: Backup config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/kibana/kibana.yml.ansible_bkp
+        dest: /etc/kibana/kibana.yml
+        owner: root
+        group: root
+        mode: '0644'
+      when: check_file_name.stat.exists
+
+    - name: Rotate repo file to disable kibana downloads/updates
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/yum.repo.d/elasticsearch.repo
+        dest: /etc/yum.repo.d/elasticsearch.repo.bkp
+    when: check_file_name.stat.exists
+
+      - name: Starting kibana Service
+        ansible.builtin.service:
+          name: kibana
+          state: started

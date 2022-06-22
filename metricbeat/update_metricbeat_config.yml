@@ -1,0 +1,33 @@
+---
+## KER - 6/22/2022
+- name: Metricbeat Config File Update
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Stopping Metricbeat services
+      ansible.builtin.service:
+        name: metricbeat
+        state: stopped
+
+    - name: Backup config files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/metricbeat/metricbeat.yml
+          dest: /etc/metricbeat/metricbeat.ansible_bkp
+        when: check_file_name.stat.exists
+
+    - name: Coping new config file from pjx-vml-jenk001:/files to <target>:/etc/metricbeat with needed owner and permissions
+      copy:
+        src: /files/metribeat.yml
+        dest: /etc/metricbeat/metricbeat.yml
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Starting Metricbeat Service
+      ansible.builtin.service:
+        name: metricbeat
+        state: started
+

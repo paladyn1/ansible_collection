@@ -1,0 +1,34 @@
+---
+## KER - 6/22/2022
+- name: filebeat Config File Update
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Stopping filebeat services
+      ansible.builtin.service:
+        name: filebeat
+        state: stopped
+
+    - name: Backup config files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/filebeat/filebeat.yml
+          dest: /etc/filebeat/filebeat.ansible_bkp
+        when: check_file_name.stat.exists
+
+    - name: Coping new config file from pjx-vml-jenk001:/files to <target>:/etc/filebeat with needed owner and permissions
+      copy:
+        src: /files/metribeat.yml
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Starting filebeat Service
+      ansible.builtin.service:
+        name: filebeat
+        state: started
+
+

@@ -1,0 +1,38 @@
+---
+## KER - 6/22/2022
+- name: Updates Metricbeat client on Centos servers where applicable
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Stopping Metricbeat services
+      ansible.builtin.service:
+        name: metricbeat
+        state: stopped
+
+    - name: Backup config files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/metricbeat/metricbeat.yml
+          dest: /etc/metricbeat/metricbeat.ansible_bkp
+        when: check_file_name.stat.exists
+
+    - name: Upgrades Metricbeat to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
+      yum:
+        name: metricbeat
+        enablerepo: elasticsearch
+        state: latest
+
+    - name: Backup rotate config file back
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/metricbeat/metricbeat.ansible_bkp
+          dest: /etc/metricbeat/metricbeat.yml
+        when: check_file_name.stat.exists
+
+    - name: Starting Metricbeat services
+      ansible.builtin.service:
+        name: metricbeat
+        state: started
+

@@ -1,0 +1,32 @@
+---
+## KER - 6/22/2022
+- name: Rotate Certs on Elasticsearch servers
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+
+    - name: Backup old cert files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/elasticsearch/wildcard-clearsense_com.bundle.crt
+          dest: /etc/elasticsearch/wildcard-clearsense_com.bundle.old
+        when: check_file_name.stat.exists
+
+    - name: Copy file with owner and permissions
+      copy:
+        src: /files/wildcard-clearsense_com.bundle.crt
+        dest: /etc/elasticsearch/wildcard-clearsense_com.bundle.crt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload Elasticsearch to update cache and start serving new certs
+      ansible.builtin.service:
+        name: elasticsearch
+        state: restarted
+
+    - name: Pause for 10 minutes to allow shards a chance to reallocate
+      pause:
+        minutes: 10
