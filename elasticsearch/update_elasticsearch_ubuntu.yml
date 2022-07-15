@@ -1,0 +1,40 @@
+---
+## KER - 7/15/2022
+- name: Elasticsearch version update for Ubuntu
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Stopping Elasticsearch services
+      ansible.builtin.service:
+        name: elasticsearch
+        state: stopped
+
+    - name: Backup config files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/elasticsearch/elasticsearch.yml
+          dest: /etc/elasticsearch/elasticsearch.yml.bkp
+        when: check_file_name.stat.exists
+
+    - name: Upgrades elasticsearch to latest version available on target machine
+        ansible.builtin.apt:
+          name: elasticsearch
+          allow_change_held_packages: true
+          state: latest
+
+    - name: Backup config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/elasticsearch/elasticsearch.yml.bkp
+        dest: /etc/elasticsearch/elasticsearch.yml
+        owner: root
+        group: root
+        mode: '0644'
+      when: check_file_name.stat.exists
+
+      - name: Starting Elasticsearch Service
+        ansible.builtin.service:
+          name: elasticsearch
+          state: started
