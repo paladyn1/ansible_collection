@@ -1,0 +1,54 @@
+---
+## KER - 7/22/2022
+- name: filebeat version update
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Stopping filebeat services
+      ansible.builtin.service:
+        name: filebeat
+        state: stopped
+
+    - name: Backup config files
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/filebeat/filebeat.yml
+          dest: /etc/filebeat/filebeat.yml.ansible_bkp
+        when: check_file_name.stat.exists
+
+    - name: Rotate repo file to enable filebeat downloads/updates
+        ansible.builtin.copy:
+          remote_src: true
+          src: /etc/apt/sources.list.d/elastic-8.x.list.ansible
+          dest: /etc/apt/sources.list.d/elastic-8.x.list
+        when: check_file_name.stat.exists
+
+    - name: Upgrades filebeat to latest version available to repo in /etc/apt/sources.list.d/elastic-8.x.list on target machine
+        ansible.builtin.apt:
+          name: filebeat
+          allow_change_held_packages: true
+          state: latest
+
+    - name: restore config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/filebeat/filebeat.yml.ansible_bkp
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0644'
+      when: check_file_name.stat.exists
+
+    - name: Rotate repo file to disable filebeat downloads/updates
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/apt/sources.list.d/elastic-8.x.list
+        dest: /etc/apt/sources.list.d/elastic-8.x.list.ansible
+    when: check_file_name.stat.exists
+
+      - name: Starting filebeat Service
+        ansible.builtin.service:
+          name: filebeat
+          state: started
