@@ -46,7 +46,7 @@
         remote_src: true
         src: /etc/yum.repo.d/elasticsearch.repo
         dest: /etc/yum.repo.d/elasticsearch.repo.bkp
-    when: check_file_name.stat.exists
+      when: check_file_name.stat.exists
 
       - name: Starting Elasticsearch Service
         ansible.builtin.service:
