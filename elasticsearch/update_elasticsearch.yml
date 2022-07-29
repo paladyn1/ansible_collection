@@ -12,7 +12,7 @@
         state: stopped
 
     - name: Backup config files
-        copy:
+        ansible.builtin.copy:
           remote_src: true
           src: /etc/elasticsearch/elasticsearch.yml
           dest: /etc/elasticsearch/elasticsearch.yml.bkp
