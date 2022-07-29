@@ -12,14 +12,14 @@
         state: stopped
 
     - name: Backup config files
-        ansible.builtin.copy:
+        copy:
           remote_src: true
           src: /etc/elasticsearch/elasticsearch.yml
           dest: /etc/elasticsearch/elasticsearch.yml.bkp
         when: check_file_name.stat.exists
 
     - name: Rotate repo file to enable elasticsearch downloads/updates
-        ansible.builtin.copy:
+        copy:
           remote_src: true
           src: /etc/yum.repo.d/elasticsearch.repo.bkp
           dest: /etc/yum.repo.d/elasticsearch.repo
@@ -32,7 +32,7 @@
           state: latest
 
     - name: Backup config files
-      ansible.builtin.copy:
+      copy:
         remote_src: true
         src: /etc/elasticsearch/elasticsearch.yml.bkp
         dest: /etc/elasticsearch/elasticsearch.yml
@@ -42,7 +42,7 @@
       when: check_file_name.stat.exists
 
     - name: Rotate repo file to disable elasticsearch downloads/updates
-      ansible.builtin.copy:
+      copy:
         remote_src: true
         src: /etc/yum.repo.d/elasticsearch.repo
         dest: /etc/yum.repo.d/elasticsearch.repo.bkp
