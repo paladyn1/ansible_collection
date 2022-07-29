@@ -26,10 +26,10 @@
       when: check_file_name.stat.exists
 
     - name: Upgrades elasticsearch to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
-        yum:
-          name: elasticsearch
-          enablerepo: elasticsearch
-          state: latest
+      yum:
+        name: elasticsearch
+        enablerepo: elasticsearch
+        state: latest
 
     - name: Backup config files
       copy:
