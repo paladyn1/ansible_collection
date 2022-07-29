@@ -6,7 +6,7 @@
   become: true
 
   tasks:
-    - name: Removes wildcard_clearsense_com.bundle.old from /etc/nginx/ssl/
+    - name: Removes wildcard_<my_domain>_com.bundle.old from /etc/nginx/ssl/
       file:
-        path: /etc/nginx/ssl/wildcard_clearsensecloud_com.bundle.old
+        path: /etc/nginx/ssl/wildcard_<my_domain>_com.bundle.old
         state: absent

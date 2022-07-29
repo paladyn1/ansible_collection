@@ -1,3 +1,9 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+/elasticsearch/hosts/*.hosts
+/external/hosts/*.hosts
+/filebeat/hosts/*.hosts
+/internal/hosts/*.hosts
+/metricbeat/hosts/*.hosts
+/kibana/hosts/*.hosts

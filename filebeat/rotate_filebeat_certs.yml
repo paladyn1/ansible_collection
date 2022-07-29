@@ -10,14 +10,14 @@
     - name: Backup old cert files
         ansible.builtin.copy:
           remote_src: true
-          src: /etc/filebeat/certs/wildcard-clearsense_com.bundle.crt
-          dest: /etc/filebeat/certs/wildcard-clearsense_com.bundle.old
+          src: /etc/filebeat/certs/wildcard-<my_domain>_com.bundle.crt
+          dest: /etc/filebeat/certs/wildcard-<my_domain>_com.bundle.old
         when: check_file_name.stat.exists
 
     - name: Copy file with owner and permissions
       copy:
-        src: /files/wildcard-clearsense_com.bundle.crt
-        dest: /etc/filebeat/certs/wildcard-clearsense_com.bundle.crt
+        src: /files/wildcard-<my_domain>_com.bundle.crt
+        dest: /etc/filebeat/certs/wildcard-<my_domain>_com.bundle.crt
         owner: root
         group: root
         mode: '0644'
