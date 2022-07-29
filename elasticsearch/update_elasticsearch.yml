@@ -16,14 +16,14 @@
         remote_src: true
         src: /etc/elasticsearch/elasticsearch.yml
         dest: /etc/elasticsearch/elasticsearch.yml.bkp
-        when: check_file_name.stat.exists
+        #when: check_file_name.stat.exists
 
     - name: Rotate repo file to enable elasticsearch downloads/updates
       copy:
         remote_src: true
         src: /etc/yum.repo.d/elasticsearch.repo.bkp
         dest: /etc/yum.repo.d/elasticsearch.repo
-        when: check_file_name.stat.exists
+        #when: check_file_name.stat.exists
 
     - name: Upgrades elasticsearch to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
       yum:
@@ -39,14 +39,14 @@
         owner: root
         group: root
         mode: '0644'
-        when: check_file_name.stat.exists
+        #when: check_file_name.stat.exists
 
     - name: Rotate repo file to disable elasticsearch downloads/updates
       copy:
         remote_src: true
         src: /etc/yum.repo.d/elasticsearch.repo
         dest: /etc/yum.repo.d/elasticsearch.repo.bkp
-        when: check_file_name.stat.exists
+        #when: check_file_name.stat.exists
 
     - name: Starting Elasticsearch Service
       ansible.builtin.service:
