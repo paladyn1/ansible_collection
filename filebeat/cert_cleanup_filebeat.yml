@@ -1,0 +1,12 @@
+---
+## KER - 6/23/2022
+- name: filebeat Certificate Cleanup
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Removes wildcard_clearsense_com.bundle.old from /etc/filebeat/certs
+      file:
+        path: /etc/filebeat/certs/wildcard_clearsense_com.bundle.old
+        state: absent

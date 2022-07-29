@@ -1,0 +1,12 @@
+---
+## KER - 6/22/2022
+- name: NGINX Certificate Cleanup - External
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Removes wildcard_clearsense_com.bundle.old from /etc/nginx/ssl/
+      file:
+        path: /etc/nginx/ssl/wildcard_clearsensecloud_com.bundle.old
+        state: absent
