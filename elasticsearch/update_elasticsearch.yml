@@ -4,7 +4,7 @@
   hosts: all
   become: yes
   gather_facts: false
-  
+
   tasks:
     - name: Stop Elasticsearch services
       ansible.builtin.service:
@@ -24,8 +24,7 @@
         src: /etc/yum.repo.d/elasticsearch.repo.ansible
         dest: /etc/yum.repo.d/elasticsearch.repo
         #when: check_file_name.stat.exists
-      become: yes
-      become_method: su
+
 
     - name: Upgrades elasticsearch to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
       yum:
@@ -39,8 +38,7 @@
         src: /etc/yum.repo.d/elasticsearch.repo
         dest: /etc/yum.repo.d/elasticsearch.repo.ansible
         #when: check_file_name.stat.exists
-      become: yes
-      become_method: su
+      
 
     - name: Restore config files
       ansible.builtin.copy:
