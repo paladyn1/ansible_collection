@@ -37,7 +37,7 @@
       ansible.builtin.yum_repository:
         name: elasticsearch
         state: absent
-      notify: yum-clean-metadata
+      #notify: yum-clean-metadata
 
     - name: Restore config files
       ansible.builtin.copy:
