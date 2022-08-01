@@ -4,9 +4,9 @@
   hosts: all
   gather_facts: false
   become: yes
-  become_method: su
-  become_user: nobody
-  become_flags: '-s /bin/sh'
+  #become_method: su
+  #become_user: nobody
+  #become_flags: '-s /bin/sh'
 
   tasks:
     - name: Stop Elasticsearch services
