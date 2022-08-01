@@ -2,8 +2,6 @@
 ## KER - 6/21/2022
 - name: Elasticsearch version update
   hosts: all
-  become: yes
-  become_user: root
   gather_facts: false
 
   tasks:
@@ -25,6 +23,9 @@
         src: /etc/yum.repo.d/elasticsearch.repo.ansible
         dest: /etc/yum.repo.d/elasticsearch.repo
         #when: check_file_name.stat.exists
+      become: yes
+      become_method: su
+      become_user: root
 
 
     - name: Upgrades elasticsearch to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
@@ -39,6 +40,13 @@
         src: /etc/yum.repo.d/elasticsearch.repo
         dest: /etc/yum.repo.d/elasticsearch.repo.ansible
         #when: check_file_name.stat.exists
+      become: yes
+      become_method: su
+      become_user: root
+      
+    - name: Removes old repo file to lock upgrades.
+      file: /etc/yum.repo.d/elasticsearch.repo
+      state: absent
 
 
     - name: Restore config files
