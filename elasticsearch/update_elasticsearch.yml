@@ -2,9 +2,9 @@
 ## KER - 6/21/2022
 - name: Elasticsearch version update
   hosts: all
+  become: yes
   gather_facts: false
-  become: true
-
+  
   tasks:
     - name: Stop Elasticsearch services
       ansible.builtin.service:
