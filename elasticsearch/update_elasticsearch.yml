@@ -24,6 +24,8 @@
         src: /etc/yum.repo.d/elasticsearch.repo.ansible
         dest: /etc/yum.repo.d/elasticsearch.repo
         #when: check_file_name.stat.exists
+      become: yes
+      become_method: su
 
     - name: Upgrades elasticsearch to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
       yum:
@@ -36,6 +38,15 @@
         remote_src: true
         src: /etc/yum.repo.d/elasticsearch.repo
         dest: /etc/yum.repo.d/elasticsearch.repo.ansible
+        #when: check_file_name.stat.exists
+      become: yes
+      become_method: su
+
+    - name: Restore config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/elasticsearch/elasticsearch.yml.ansible
+        dest: /etc/elasticsearch/elasticsearch.yml
         #when: check_file_name.stat.exists
 
     - name: Starting Elasticsearch Service
