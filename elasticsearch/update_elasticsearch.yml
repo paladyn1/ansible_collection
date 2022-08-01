@@ -49,6 +49,12 @@
       #become_method: su
       #become_user: root
 
+    - name: Restart service cron on centos, in all cases, also issue daemon-reload to pick up config changes
+      ansible.builtin.systemd:
+        state: started
+        daemon_reload: yes
+        name: elasticsearch
+
     - name: Starting Elasticsearch Service
       ansible.builtin.service:
         name: elasticsearch
