@@ -27,7 +27,7 @@
         src: /etc/yum.repo.d/elasticsearch.repo.ansible
         dest: /etc/yum.repo.d/elasticsearch.repo
         #when: check_file_name.stat.exists
-      #become: yes
+      become: yes
       #become_method: su
       #become_user: root
 
@@ -48,7 +48,7 @@
         src: /etc/elasticsearch/elasticsearch.yml.ansible
         dest: /etc/elasticsearch/elasticsearch.yml
         #when: check_file_name.stat.exists
-      #become: yes
+      become: yes
       #become_method: su
       #become_user: root
 
