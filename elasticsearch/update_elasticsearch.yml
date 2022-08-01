@@ -1,12 +1,9 @@
 ---
-## KER - 6/21/2022
+## KER - 8/01/2022
 - name: Elasticsearch version update
   hosts: all
   gather_facts: false
   become: yes
-  #become_method: su
-  #become_user: nobody
-  #become_flags: '-s /bin/sh'
 
   tasks:
     - name: Stop Elasticsearch services
@@ -19,7 +16,6 @@
         remote_src: true
         src: /etc/elasticsearch/elasticsearch.yml
         dest: /etc/elasticsearch/elasticsearch.yml.ansible
-        #when: check_file_name.stat.exists
 
     - name: Add elasticsearch repository
       ansible.builtin.yum_repository:
@@ -37,19 +33,15 @@
       ansible.builtin.yum_repository:
         name: elasticsearch
         state: absent
-      #notify: yum-clean-metadata
 
     - name: Restore config files
       ansible.builtin.copy:
         remote_src: true
         src: /etc/elasticsearch/elasticsearch.yml.ansible
         dest: /etc/elasticsearch/elasticsearch.yml
-        #when: check_file_name.stat.exists
       become: yes
-      #become_method: su
-      #become_user: root
 
-    - name: Restart service cron on centos, in all cases, also issue daemon-reload to pick up config changes
+    - name: Restart elasticsearch service on centos, in all cases, also issue daemon-reload to pick up config changes
       ansible.builtin.systemd:
         state: started
         daemon_reload: yes

@@ -1,38 +1,53 @@
 ---
-## KER - 6/22/2022
-- name: Updates Metricbeat client on Centos servers where applicable
+## KER - 8/01/2022
+- name: metricbeat version update
   hosts: all
   gather_facts: false
-  become: true
+  become: yes
 
   tasks:
-    - name: Stopping Metricbeat services
+    - name: Stop metricbeat services
       ansible.builtin.service:
-        name: metricbeat
+        name: apt
         state: stopped
 
     - name: Backup config files
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/metricbeat/metricbeat.yml
-          dest: /etc/metricbeat/metricbeat.ansible_bkp
-        when: check_file_name.stat.exists
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/metricbeat/metricbeat.yml
+        dest: /etc/metricbeat/metricbeat.yml.ansible
 
-    - name: Upgrades Metricbeat to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
+    - name: Add metricbeat repository
+      ansible.builtin.yum_repository:
+        name: metricbeat
+        description: metricbeat yum repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/yum
+
+    - name: Upgrades metricbeat to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
       yum:
         name: metricbeat
         enablerepo: elasticsearch
         state: latest
 
-    - name: Backup rotate config file back
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/metricbeat/metricbeat.ansible_bkp
-          dest: /etc/metricbeat/metricbeat.yml
-        when: check_file_name.stat.exists
+    - name: Remove metricbeat repo
+      ansible.builtin.yum_repository:
+        name: elasticsearch
+        state: absent
 
-    - name: Starting Metricbeat services
+    - name: Restore config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/metricbeat/metricbeat.yml.ansible
+        dest: /etc/metricbeat/metricbeat.yml
+      become: yes
+
+    - name: Restart metricbeat service on centos, in all cases, also issue daemon-reload to pick up config changes
+      ansible.builtin.systemd:
+        state: started
+        daemon_reload: yes
+        name: metricbeat
+
+    - name: Starting metricbeat Service
       ansible.builtin.service:
         name: metricbeat
         state: started
-

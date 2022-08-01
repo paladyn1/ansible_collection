@@ -1,54 +1,53 @@
 ---
-## KER - 7/22/2022
+## KER - 8/01/2022
 - name: filebeat version update
   hosts: all
   gather_facts: false
-  become: true
+  become: yes
 
   tasks:
-    - name: Stopping filebeat services
+    - name: Stop filebeat services
       ansible.builtin.service:
-        name: filebeat
+        name: apt
         state: stopped
 
     - name: Backup config files
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/filebeat/filebeat.yml
-          dest: /etc/filebeat/filebeat.yml.ansible_bkp
-        when: check_file_name.stat.exists
-
-    - name: Rotate repo file to enable filebeat downloads/updates
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/apt/sources.list.d/elastic-8.x.list.ansible
-          dest: /etc/apt/sources.list.d/elastic-8.x.list
-        when: check_file_name.stat.exists
-
-    - name: Upgrades filebeat to latest version available to repo in /etc/apt/sources.list.d/elastic-8.x.list on target machine
-        ansible.builtin.apt:
-          name: filebeat
-          allow_change_held_packages: true
-          state: latest
-
-    - name: restore config files
       ansible.builtin.copy:
         remote_src: true
-        src: /etc/filebeat/filebeat.yml.ansible_bkp
+        src: /etc/filebeat/filebeat.yml
+        dest: /etc/filebeat/filebeat.yml.ansible
+
+    - name: Add filebeat repository
+      ansible.builtin.apt_repository:
+        name: filebeat
+        description: filebeat apt repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/apt
+
+    - name: Upgrades filebeat to latest version available to repo in /etc/apt.repo.d/elasticsearch.repo on target machine
+      apt:
+        name: filebeat
+        enablerepo: elasticsearch
+        state: latest
+
+    - name: Remove filebeat repo
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        state: absent
+
+    - name: Restore config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/filebeat/filebeat.yml.ansible
         dest: /etc/filebeat/filebeat.yml
-        owner: root
-        group: root
-        mode: '0644'
-      when: check_file_name.stat.exists
+      become: yes
 
-    - name: Rotate repo file to disable filebeat downloads/updates
-      ansible.builtin.copy:
-        remote_src: true
-        src: /etc/apt/sources.list.d/elastic-8.x.list
-        dest: /etc/apt/sources.list.d/elastic-8.x.list.ansible
-    when: check_file_name.stat.exists
+    - name: Restart filebeat service on centos, in all cases, also issue daemon-reload to pick up config changes
+      ansible.builtin.systemd:
+        state: started
+        daemon_reload: yes
+        name: filebeat
 
-      - name: Starting filebeat Service
-        ansible.builtin.service:
-          name: filebeat
-          state: started
+    - name: Starting filebeat Service
+      ansible.builtin.service:
+        name: filebeat
+        state: started

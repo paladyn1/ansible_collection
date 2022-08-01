@@ -1,54 +1,53 @@
 ---
-## KER - 7/22/2022
+## KER - 8/01/2022
 - name: metricbeat version update
   hosts: all
   gather_facts: false
-  become: true
+  become: yes
 
   tasks:
-    - name: Stopping metricbeat services
+    - name: Stop metricbeat services
       ansible.builtin.service:
-        name: metricbeat
+        name: apt
         state: stopped
 
     - name: Backup config files
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/metricbeat/metricbeat.yml
-          dest: /etc/metricbeat/metricbeat.yml.ansible_bkp
-        when: check_file_name.stat.exists
-
-    - name: Rotate repo file to enable metricbeat downloads/updates
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/apt/sources.list.d/elastic-8.x.list.ansible
-          dest: /etc/apt/sources.list.d/elastic-8.x.list
-        when: check_file_name.stat.exists
-
-    - name: Upgrades metricbeat to latest version available to repo in /etc/apt/sources.list.d/elastic-8.x.list on target machine
-        ansible.builtin.apt:
-          name: metricbeat
-          allow_change_held_packages: true
-          state: latest
-
-    - name: restore config files
       ansible.builtin.copy:
         remote_src: true
-        src: /etc/metricbeat/metricbeat.yml.ansible_bkp
+        src: /etc/metricbeat/metricbeat.yml
+        dest: /etc/metricbeat/metricbeat.yml.ansible
+
+    - name: Add metricbeat repository
+      ansible.builtin.apt_repository:
+        name: metricbeat
+        description: metricbeat apt repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/apt
+
+    - name: Upgrades metricbeat to latest version available to repo in /etc/apt.repo.d/elasticsearch.repo on target machine
+      apt:
+        name: metricbeat
+        enablerepo: elasticsearch
+        state: latest
+
+    - name: Remove metricbeat repo
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        state: absent
+
+    - name: Restore config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/metricbeat/metricbeat.yml.ansible
         dest: /etc/metricbeat/metricbeat.yml
-        owner: root
-        group: root
-        mode: '0644'
-      when: check_file_name.stat.exists
+      become: yes
 
-    - name: Rotate repo file to disable metricbeat downloads/updates
-      ansible.builtin.copy:
-        remote_src: true
-        src: /etc/apt/sources.list.d/elastic-8.x.list
-        dest: /etc/apt/sources.list.d/elastic-8.x.list.ansible
-    when: check_file_name.stat.exists
+    - name: Restart metricbeat service on centos, in all cases, also issue daemon-reload to pick up config changes
+      ansible.builtin.systemd:
+        state: started
+        daemon_reload: yes
+        name: metricbeat
 
-      - name: Starting metricbeat Service
-        ansible.builtin.service:
-          name: metricbeat
-          state: started
+    - name: Starting metricbeat Service
+      ansible.builtin.service:
+        name: metricbeat
+        state: started

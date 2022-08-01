@@ -1,54 +1,53 @@
 ---
-## KER - 7/22/2022
-- name: Elasticsearch version update for Ubuntu
+## KER - 8/01/2022
+- name: Elasticsearch version update
   hosts: all
   gather_facts: false
-  become: true
+  become: yes
 
   tasks:
-    - name: Stopping Elasticsearch services
+    - name: Stop Elasticsearch services
       ansible.builtin.service:
         name: elasticsearch
         state: stopped
 
     - name: Backup config files
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/elasticsearch/elasticsearch.yml
-          dest: /etc/elasticsearch/elasticsearch.yml.bkp
-        when: check_file_name.stat.exists
-
-    - name: Rotate repo file to enable elasticsearch downloads/updates
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/apt/sources.list.d/elastic-8.x.list.ansible
-          dest: /etc/apt/sources.list.d/elastic-8.x.list
-        when: check_file_name.stat.exists
-
-    - name: Upgrades elasticsearch to latest version available on target machine
-        ansible.builtin.apt:
-          name: elasticsearch
-          allow_change_held_packages: true
-          state: latest
-
-    - name: restore config files
       ansible.builtin.copy:
         remote_src: true
-        src: /etc/elasticsearch/elasticsearch.yml.bkp
+        src: /etc/elasticsearch/elasticsearch.yml
+        dest: /etc/elasticsearch/elasticsearch.yml.ansible
+
+    - name: Add elasticsearch repository
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        description: elasticsearch apt repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/apt
+
+    - name: Upgrades elasticsearch to latest version available to repo
+      apt:
+        name: elasticsearch
+        enablerepo: elasticsearch
+        state: latest
+
+    - name: Remove Elasticsearch repo
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        state: absent
+
+    - name: Restore config files
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/elasticsearch/elasticsearch.yml.ansible
         dest: /etc/elasticsearch/elasticsearch.yml
-        owner: root
-        group: root
-        mode: '0644'
-      when: check_file_name.stat.exists
+      become: yes
 
-    - name: Rotate repo file to disable elasticsearch downloads/updates
-        ansible.builtin.copy:
-          remote_src: true
-          src: /etc/apt/sources.list.d/elastic-8.x.list
-          dest: /etc/apt/sources.list.d/elastic-8.x.list.ansible
-        when: check_file_name.stat.exists
+    - name: Restart elasticsearch service on centos, in all cases, also issue daemon-reload to pick up config changes
+      ansible.builtin.systemd:
+        state: started
+        daemon_reload: yes
+        name: elasticsearch
 
-      - name: Starting Elasticsearch Service
-        ansible.builtin.service:
-          name: elasticsearch
-          state: started
+    - name: Starting Elasticsearch Service
+      ansible.builtin.service:
+        name: elasticsearch
+        state: started
