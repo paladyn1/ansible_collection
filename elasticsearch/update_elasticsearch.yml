@@ -46,7 +46,7 @@
 
     - name: Removes old repo file to lock upgrades.
       file:
-        src: /etc/yum.repo.d/elasticsearch.repo
+        path: /etc/yum.repo.d/elasticsearch.repo
       state: absent
 
 
