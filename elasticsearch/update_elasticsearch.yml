@@ -3,6 +3,9 @@
 - name: Elasticsearch version update
   hosts: all
   gather_facts: false
+  become: yes
+  become_method: su
+  become_user: root
 
   tasks:
     - name: Stop Elasticsearch services
@@ -16,9 +19,6 @@
         src: /etc/elasticsearch/elasticsearch.yml
         dest: /etc/elasticsearch/elasticsearch.yml.ansible
         #when: check_file_name.stat.exists
-      become: yes
-      become_method: su
-      become_user: root
 
     - name: Rotate repo file to enable elasticsearch downloads/updates
       copy:
@@ -26,9 +26,9 @@
         src: /etc/yum.repo.d/elasticsearch.repo.ansible
         dest: /etc/yum.repo.d/elasticsearch.repo
         #when: check_file_name.stat.exists
-      become: yes
-      become_method: su
-      become_user: root
+      #become: yes
+      #become_method: su
+      #become_user: root
 
     - name: Upgrades elasticsearch to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine
       yum:
@@ -47,9 +47,9 @@
         src: /etc/elasticsearch/elasticsearch.yml.ansible
         dest: /etc/elasticsearch/elasticsearch.yml
         #when: check_file_name.stat.exists
-      become: yes
-      become_method: su
-      become_user: root
+      #become: yes
+      #become_method: su
+      #become_user: root
 
     - name: Starting Elasticsearch Service
       ansible.builtin.service:
