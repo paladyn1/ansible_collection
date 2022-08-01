@@ -44,10 +44,10 @@
       become_method: su
       become_user: root
 
-    - name: Removes old repo file to lock upgrades.
-      file:
+    - name: Remove file (delete file)
+      ansible.builtin.file:
         path: /etc/yum.repo.d/elasticsearch.repo
-      state: absent
+        state: absent
 
 
     - name: Restore config files
