@@ -3,6 +3,7 @@
 - name: Elasticsearch version update
   hosts: all
   become: yes
+  become_user: root
   gather_facts: false
 
   tasks:
@@ -38,7 +39,7 @@
         src: /etc/yum.repo.d/elasticsearch.repo
         dest: /etc/yum.repo.d/elasticsearch.repo.ansible
         #when: check_file_name.stat.exists
-      
+
 
     - name: Restore config files
       ansible.builtin.copy:
