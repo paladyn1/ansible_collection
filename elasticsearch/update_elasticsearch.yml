@@ -43,10 +43,11 @@
       become: yes
       become_method: su
       become_user: root
-      
+
     - name: Removes old repo file to lock upgrades.
-      file: /etc/yum.repo.d/elasticsearch.repo
-      state: absent
+      file:
+      src: /etc/yum.repo.d/elasticsearch.repo
+        state: absent
 
 
     - name: Restore config files
