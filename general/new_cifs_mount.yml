@@ -35,9 +35,9 @@
 #          group: root
 
     - name: Mount network share
-        ansible.posix.mount:
-          src: "{{ uri }}"
-          path: "{{ mountpoint }}"
-          fstype: cifs
-          opts: "{{ myopts }}"
-          state: mounted
+      ansible.posix.mount:
+        src: "{{ uri }}"
+        path: "{{ mountpoint }}"
+        fstype: cifs
+        opts: "{{ myopts }}"
+        state: mounted
