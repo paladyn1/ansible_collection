@@ -27,13 +27,13 @@
         state: present
       when: ansible_os_family == 'Debian'
 
-    - name: check mountpoint exist
-      ansible.builtin.file:
-        path: "{{ mountpoint }}"
-        state: directory
-        mode: "{{ permission }}"
-        owner: root
-        group: root
+#    - name: check mountpoint exist
+#      ansible.builtin.file:
+#        path: "{{ mountpoint }}"
+#        state: directory
+#        mode: "{{ permission }}"
+#        owner: root
+#        group: root
 
     - name: mount network share
       ansible.posix.mount:
