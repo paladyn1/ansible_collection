@@ -1,4 +1,5 @@
 ---
+### KER 8/5/2022 ###
 - name: mount cifs drive
   hosts: all
   become: true
@@ -9,6 +10,7 @@
     mountpoint: '{{ MOUNTPOINT }}'
     permission: '0755'
     myopts: 'ro,username={{ username }},password={{ password }}'
+
   tasks:
     - name: utility present redhat-like
       ansible.builtin.yum:
@@ -16,12 +18,14 @@
           - cifs-utils
         state: present
       when: ansible_os_family == 'RedHat'
+
     - name: utility present debian-like
       ansible.builtin.apt:
         name:
           - cifs-utils
         state: present
       when: ansible_os_family == 'Debian'
+
     - name: Mount network share
       ansible.posix.mount:
         src: '{{ uri }}'
