@@ -1,0 +1,13 @@
+---
+### KER 8/5/2022 ###
+- name: remove mounted drive
+  hosts: all
+  become: true
+  vars:
+    mountpoint: "{{ MOUNTPOINT }}"
+
+  tasks:
+    - name: Unmount a mounted volume
+      ansible.posix.mount:
+        path: {{ MOUNTPOINT }}
+        state: unmounted

@@ -1,0 +1,43 @@
+---
+### KER 8/5/2022 ###
+- name: mount cifs drive
+  hosts: all
+  become: true
+  vars:
+    uri: "{{ URI }}"
+    username: "cs_ingest"
+    password: "sl8mm1n%"
+    mountpoint: "{{ MOUNTPOINT }}"
+    permission: "{{ PERMISSION }}"
+    myopts: 'ro,username={{ username }},password={{ password }}'
+
+  tasks:
+    - name: utility present redhat-like
+      ansible.builtin.yum:
+        name:
+          - cifs-utils
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: utility present debian-like
+      ansible.builtin.apt:
+        name:
+          - cifs-utils
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: check mountpoint exist
+        ansible.builtin.file:
+          path: "{{ mountpoint }}"
+          state: directory
+          mode: "{{ permission }}"
+          owner: root
+          group: root
+
+    - name: Mount network share
+        ansible.posix.mount:
+          src: "{{ uri }}"
+          path: "{{ mountpoint }}"
+          fstype: cifs
+          opts: "{{ myopts }}"
+          state: mounted

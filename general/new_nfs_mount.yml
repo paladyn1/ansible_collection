@@ -1,0 +1,45 @@
+---
+### KER 8/5/2022 ###
+- name: mount nfs drive
+  hosts: all
+  become: true
+  vars:
+    remote_host: "{{ REMOTEHOST }}"
+    remote_path: "{{ REMOTEPATH }}"
+    uri: "{{ remote_host }}:{{ remote_path }}"
+    mountpoint: "{{ MOUNTPATH }}"
+    permission: "{{ PERMISSION }}"
+    myopts: 'ro'
+
+  tasks:
+    - name: utility present redhat-like
+      ansible.builtin.yum:
+        name:
+          - nfs-utils
+          - nfs4-acl-tools
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: utility present debian-like
+      ansible.builtin.apt:
+        name:
+          - nfs-common
+          - nfs4-acl-tools
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: check mountpoint exist
+      ansible.builtin.file:
+        path: "{{ mountpoint }}"
+        state: directory
+        mode: "{{ permission }}"
+        owner: root
+        group: root
+
+    - name: mount network share
+      ansible.posix.mount:
+        src: "{{ uri }}"
+        path: "{{ mountpoint }}"
+        fstype: nfs
+        opts: "{{ myopts }}"
+        state: mounted

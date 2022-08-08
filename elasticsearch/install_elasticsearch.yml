@@ -1,0 +1,53 @@
+---
+### KER 8/5/2022 ###
+- name: Install Elasticsearch
+  hosts: all
+  become: true
+  vars:
+
+  tasks:
+    - name: Generalized package manager update - Redhat Family hosts
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+      when: ansible_os_family == 'RedHat'
+
+    - name: Generalized package manager update - Debian Family hosts
+      ansible.builtin.apt:
+        name: '*'
+        state: latest
+      when: ansible_os_family == 'Debian'
+
+    - name: Disable SWAP since Elasticsearch makes swap suck
+      shell: |
+        swapoff -a
+
+    - name: Disable SWAP in fstab since Elasticsearch makes swap suck
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+
+    - name: Get Elasticsearch PGP Key (RedHat)
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      when: ansible_os_family == 'RedHat'
+
+    - name: Get Elasticsearch PGP Key (Debian)
+      shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+      when: ansible_os_family == 'Debian'
+
+    - name: Add elasticsearch repository (RedHat)
+      ansible.builtin.yum_repository:
+        name: elasticsearch
+        description: elasticsearch yum repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/yum
+      when: ansible_os_family == 'RedHat'
+
+    - name: Add elasticsearch repository (Debian)
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        description: elasticsearch apt repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/apt
+      when: ansible_os_family == 'Debian'
