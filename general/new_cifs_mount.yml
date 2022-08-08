@@ -8,7 +8,7 @@
     username: "cs_ingest"
     password: "sl8mm1n%"
     mountpoint: "{{ MOUNTPOINT }}"
-    permission: "{{ PERMISSION }}"
+    permission: "0755"
     myopts: 'ro,username={{ username }},password={{ password }}'
 
   tasks:

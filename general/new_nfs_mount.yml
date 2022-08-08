@@ -8,7 +8,6 @@
     remote_path: "{{ REMOTEPATH }}"
     uri: "{{ remote_host }}:{{ remote_path }}"
     mountpoint: "{{ MOUNTPATH }}"
-    permission: "{{ PERMISSION }}"
     myopts: 'ro'
 
   tasks:
