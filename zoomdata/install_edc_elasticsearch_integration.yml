@@ -2,7 +2,7 @@
 ### KER - 8/8/2022
 - name: EDC Elasticsearch Integreation install
   hosts: all
-  gather_facts: false
+  gather_facts: true
   become: true
 
   tasks:
