@@ -23,14 +23,14 @@
 
     - name: Copy RPM down from repo
       get_url:
-        url: https://composer-repo.logianalytics.com/8.0/yum/redhat/7/x86_64/stable/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm
+        url: "https://composer-repo.logianalytics.com/8.0/yum/redhat/7/x86_64/stable/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm"
         dest: /opt/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm
         mode: 0777
       when: ansible_facts['os_family'] == 'RedHat'
 
     - name: Copy DEB down from repo
         get_url:
-          url: https://composer-repo.logianalytics.com/8.0/apt/ubuntu/pool/stable/z/zoomdata-edc-elasticsearch-7.0/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb
+          url: "https://composer-repo.logianalytics.com/8.0/apt/ubuntu/pool/stable/z/zoomdata-edc-elasticsearch-7.0/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb"
           dest: /opt/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm
           mode: 0777
         when: ansible_facts['os_family'] == 'Debian'
