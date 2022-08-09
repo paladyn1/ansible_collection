@@ -12,13 +12,13 @@
     - name: Remove EDC-Elasticsearch for redhat based clients
       ansible.builtin.yum_repository:
         name: zoomdata-edc-elasticsearch-7.0
-          state: absent
+        state: absent
       when: ansible_facts['os_family'] == 'RedHat'
 
     - name: Remove EDC-Elasticsearch for debian based clients
       ansible.builtin.apt_repository:
         name: zoomdata-edc-elasticsearch-7.0
-          state: absent
+        state: absent
         when: ansible_facts['os_family'] == 'Debian'
 
     - name: Install EDC-Elasticsearch v8 RPM for redhat based clients
