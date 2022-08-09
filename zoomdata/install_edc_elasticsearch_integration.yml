@@ -19,7 +19,7 @@
       ansible.builtin.apt_repository:
         name: zoomdata-edc-elasticsearch-7.0
         state: absent
-        when: ansible_facts['os_family'] == 'Debian'
+      when: ansible_facts['os_family'] == 'Debian'
 
     - name: Install EDC-Elasticsearch v8 RPM for redhat based clients
       ansible.builtin.yum:
