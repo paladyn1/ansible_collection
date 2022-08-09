@@ -9,19 +9,19 @@
     - name: stop Zoomdata services
       ansible.builtin.shell: /opt/zoomdata/bin/zdmanage services stop
 
-    #- name: Remove EDC-Elasticsearch for redhat based clients
-    #  ansible.builtin.yum:
-    #    name:
-    #      - zoomdata-edc-elasticsearch-7.0
-    #    state: removed
-    #  when: ansible_os_family == 'RedHat'
+    - name: Remove EDC-Elasticsearch for redhat based clients
+      ansible.builtin.yum:
+        name:
+          - zoomdata-edc-elasticsearch-7.0
+        state: removed
+      when: ansible_facts['os_family'] == 'RedHat'
 
-    #- name: Remove EDC-Elasticsearch for debian based clients
-    #  ansible.builtin.apt:
-    #    name:
-    #      - zoomdata-edc-elasticsearch-7.0
-    #      state: removed
-    #    when: ansible_os_family == 'Debian'
+    - name: Remove EDC-Elasticsearch for debian based clients
+      ansible.builtin.apt:
+        name:
+          - zoomdata-edc-elasticsearch-7.0
+          state: removed
+        when: ansible_facts['os_family'] == 'Debian'
 
     - name: Install EDC-Elasticsearch v8 RPM for redhat based clients
       ansible.builtin.yum:
