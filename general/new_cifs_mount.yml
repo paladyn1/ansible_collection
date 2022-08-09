@@ -12,6 +12,7 @@
     myopts: 'ro,username={{ username }},password={{ password }}'
 
   tasks:
+
     - name: utility present redhat-like
       ansible.builtin.yum:
         name:
