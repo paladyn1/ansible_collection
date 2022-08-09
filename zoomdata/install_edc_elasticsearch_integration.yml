@@ -27,13 +27,13 @@
       ansible.builtin.yum:
         name: https://composer-repo.logianalytics.com/8.0/yum/redhat/7/x86_64/stable/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm
         state: present
-      when: ansible_os_family == 'RedHat'
+      when: ansible_facts['os_family'] == 'RedHat'
 
     - name: Install EDC-Elasticsearch v8 RPM for debian based clients
       ansible.builtin.apt:
         name: https://composer-repo.logianalytics.com/8.0/apt/ubuntu/pool/stable/z/zoomdata-edc-elasticsearch-7.0/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts['os_family'] == 'Debian'
 
     - name: start Zoomdata services
       ansible.builtin.shell: /opt/zoomdata/bin/zdmanage services start
