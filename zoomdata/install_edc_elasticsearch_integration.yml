@@ -43,7 +43,7 @@
 
     - name: Install package from download (debian)
       ansible.builtin.apt:
-        deb: /optzoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb
+        deb: /opt/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb
         state: present
       when: ansible_facts['os_family'] == 'Debian'
 
