@@ -30,7 +30,7 @@
 
     - name: Copy DEB down from repo
       ansible.builtin.get_url:
-        url: "https://composer-repo.logianalytics.com/8.0/apt/ubuntu/pool/stable/z/zoomdata-edc-elasticsearch-7.0/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb"
+        url: "https://composer-repo.logianalytics.com/8.1/apt/ubuntu/pool/stable/z/zoomdata-edc-elasticsearch-8.0/zoomdata-edc-elasticsearch-8.0_8.1.0-3+focal.stable_all.deb"
         dest: /opt/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb
         mode: 0755
       when: ansible_facts['os_family'] == 'Debian'
