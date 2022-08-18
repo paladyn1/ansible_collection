@@ -43,6 +43,11 @@
           dest: /etc/nginx/conf.d/{{ dns }}_clearsensecloud_com.conf
         when: check_file_name.stat.exists
 
+    - name: Check to make sure nginx_tempalte.conf file is absent, and if not, removes it
+      ansible.builtin.file:
+        path: /etc/nginx/conf.d/nginx_template.conf
+        state: absent
+
     - name: Check nginx file formatting before reload
       ansible.builtin.command: nginx -t
       register: result
