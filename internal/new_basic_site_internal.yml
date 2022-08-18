@@ -1,13 +1,18 @@
 ---
-## KER - 6/22/2022
-- name: New Proxy site setup - Basic (Internal)
+## KER - 8/18/2022
+- name: New Proxy site setup - Basic (internal)
   hosts: all
   gather_facts: false
   become: true
+  vars:
+    dns: '{{ DNS }}'
+    host_target: '{{ HOST_TARGET }}'
+    port: '{{ PORT }}'
+
 
   tasks:
     - name: Copy over template
-      src: ~/templates/nginx_template.conf
+      src: internal/templates/nginx_template.conf
       dest: /etc/nginx/conf.d/nginx_template.conf
       owner: root
       group: root
@@ -20,12 +25,6 @@
         replace: "{{ dns }}"
 
     - name: Update Template - Host_Target name
-        replace:
-          path: /etc/nginx/conf.d/nginx_template.conf
-          regexp: '###host_target###'
-          replace: "{{ host_target }}"
-
-    - name: Update Template - DNS name
         replace:
           path: /etc/nginx/conf.d/nginx_template.conf
           regexp: '###host_target###'
