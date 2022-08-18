@@ -1,0 +1,78 @@
+---
+### KER 8/18/2022 ###
+- name: Install Filebeat for Docker Log Forwarding
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Get Elasticsearch PGP Key for Filebeat install(RedHat)
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://packages.elastic.co/GPG-KEY-elasticsearch
+      when: ansible_os_family == 'RedHat'
+
+    - name: Get Elasticsearch PGP Key for Filebeat install(Debian)
+      shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+      when: ansible_os_family == 'Debian'
+
+    - name: Add elasticsearch repository (RedHat)
+      ansible.builtin.yum_repository:
+        name: elasticsearch
+        description: elasticsearch yum repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/yum
+      when: ansible_os_family == 'RedHat'
+
+    - name: Add filebeat repository (Debian)
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        description: filebeat apt repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/apt
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Filebeat elasticsearch repository (RedHat)
+      ansible.builtin.yum_repository:
+        name: elasticsearch
+        description: elasticsearch yum repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/yum
+      when: ansible_os_family == 'RedHat'
+
+    - name: Add elasticsearch repository (Debian)
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        description: elasticsearch apt repo
+        baseurl: https://artifacts.elastic.co/packages/8.x/apt
+      when: ansible_os_family == 'Debian'
+
+    - name: Installs Filebeat to latest version available to repo in /etc/yum.repo.d/elasticsearch.repo on target machine (RedHat)
+      yum:
+        name: filebeat
+        enablerepo: elasticsearch
+        state: latest
+      when: ansible_os_family == 'RedHat'
+
+    - name: Upgrades elasticsearch to latest version available to repo in /etc/apt/sources.list.d/elastic8.X.list on target machine (RedHat)
+      apt:
+        name: filebeat
+        enablerepo: elasticsearch
+        state: latest
+      when: ansible_os_family == 'Debian'
+
+    - name: Remove Elasticsearch repo
+      ansible.builtin.yum_repository:
+        name: elasticsearch
+        state: absent
+      when: ansible_os_family == 'RedHat'
+
+    - name: Copy welcome.jsp with owner and permissions
+        copy:
+        src: /filebeat/templates/docker_filebeat.yml
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Restart filebeat service on centos, in all cases, also issue daemon-reload to pick up config changes
+      ansible.builtin.systemd:
+        state: started
+        daemon_reload: yes
+        name: filebeat
