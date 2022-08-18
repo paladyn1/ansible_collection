@@ -9,21 +9,9 @@
     - name: stop Zoomdata services
       ansible.builtin.shell: /opt/zoomdata/bin/zdmanage services stop
 
-    #- name: Remove EDC-Elasticsearch for redhat based clients
-    #  ansible.builtin.yum:
-    #    name: zoomdata-edc-elasticsearch-7.0
-    #    state: absent
-    #  when: ansible_facts['os_family'] == 'RedHat'
-
-    #- name: Remove EDC-Elasticsearch for debian based clients
-    #  ansible.builtin.apt:
-    #    name: zoomdata-edc-elasticsearch-7.0
-    #    state: absent
-    #  when: ansible_facts['os_family'] == 'Debian'
-
     - name: Copy RPM down from repo
       ansible.builtin.get_url:
-        url: "https://composer-repo.logianalytics.com/8.0/yum/redhat/7/x86_64/stable/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm"
+        url: "https://composer-repo.logianalytics.com/8.1/yum/redhat/7/x86_64/stable/zoomdata-edc-elasticsearch-8.0-8.1.0-3.el7.stable.noarch.rpm"
         dest: /opt/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm
         mode: 0755
       when: ansible_facts['os_family'] == 'RedHat'
@@ -46,18 +34,6 @@
         deb: /opt/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb
         state: present
       when: ansible_facts['os_family'] == 'Debian'
-
-    #- name: Install EDC-Elasticsearch v8 for redhat based clients
-    #  ansible.builtin.yum:
-    #    name: https://composer-repo.logianalytics.com/8.0/yum/redhat/7/x86_64/stable/zoomdata-edc-elasticsearch-7.0-8.0.0-3.el7.stable.noarch.rpm
-    #    state: present
-    #  when: ansible_facts['os_family'] == 'RedHat'
-
-    #- name: Install EDC-Elasticsearch v8 for debian based clients
-    #  ansible.builtin.apt:
-    #    name: https://composer-repo.logianalytics.com/8.0/apt/ubuntu/pool/stable/z/zoomdata-edc-elasticsearch-7.0/zoomdata-edc-elasticsearch-7.0_8.0.0-3+focal.stable_all.deb
-    #    state: present
-    #  when: ansible_facts['os_family'] == 'Debian'
 
     - name: start Zoomdata services
       ansible.builtin.shell: /opt/zoomdata/bin/zdmanage services start

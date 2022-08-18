@@ -1,0 +1,35 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /opt/zoomdata/logs/zoomdata-activity.log*
+      - /opt/zoomdata/logs/zoomdata-access.log*
+
+    multiline.pattern: ^\[
+    multiline.match: after
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+
+setup.template.settings:
+  index.number_of_shards: 1
+
+setup.kibana:
+
+#-------------------------- KAFKA OUTPUT --------------------------------------
+setup.template.enabled: false
+output.kafka:
+  hosts: ["pjx-vml-hdpm003.clearsense.local:6667","pjx-vml-hdpm004.clearsense.local:6667","pjx-vml-hdpm005.clearsense.local:6667"]
+  #hosts: ["tjx-vml-hdpm001.clearsense.local:6667", "tjx-vml-hdpm002.clearsense.local:6667", "tjx-vml-hdpm003.clearsense.local:6667"]
+  topic: "prod-visualize-###TENANT###"
+  codec.json:
+    pretty: true
+
+
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~

@@ -1,0 +1,36 @@
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+
+setup.kibana:
+  host: "https://pjx-vml-elkk001:5601"
+
+output.elasticsearch:
+  # Array of hosts to connect to.  These are the other nodes in the cluster.
+  hosts: ["https://pjx-vml-elkm001.clearsense.com:9200", "https://pjx-vml-elkm003.clearsense.com:9200", "https://pjx-vml-elkm003.clearsense.com:9200"]
+
+  # Optional protocol and basic auth credentials.
+  protocol: "https"
+  username: "elastic"
+  password: "35h9oSYXRzYKwnaC"
+  ssl.certificate_authorities: ["/etc/filebeat/certs/wildcard-clearsense_com.bundle.crt"]
+
+filebeat.inputs:
+  - type: container
+    enabled: true
+    encoding: "utf-8"
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    monitoring.enabled: true
+
+logging.level: error
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
