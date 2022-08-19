@@ -2,7 +2,7 @@
 ## KER - 8/01/2022
 - name: Elasticsearch version update
   hosts: all
-  gather_facts: false
+  gather_facts: true
   become: yes
 
   tasks:

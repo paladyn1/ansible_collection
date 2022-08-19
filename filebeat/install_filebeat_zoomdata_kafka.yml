@@ -65,6 +65,12 @@
         state: absent
       when: ansible_os_family == 'RedHat'
 
+    - name: Remove Elasticsearch repo
+      ansible.builtin.apt_repository:
+        name: elasticsearch
+        state: absent
+      when: ansible_os_family == 'Debian'
+
     - name: Copy welcome.jsp with owner and permissions
         copy:
         src: /filebeat/templates/zoomdata_kafka_filebeat.yml
