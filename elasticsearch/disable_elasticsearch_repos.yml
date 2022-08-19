@@ -6,14 +6,14 @@
   become: yes
 
   tasks:
-    - name: Remove Elasticsearch repo
+    - name: Remove Elasticsearch repo (RedHat)
       ansible.builtin.yum_repository:
         name: elasticsearch
         state: absent
       when: ansible_os_family == 'RedHat'
 
-    - name: Remove Elasticsearch repo
+    - name: Remove Elasticsearch repo (Debian)
       ansible.builtin.apt_repository:
-        name: elasticsearch
+        name: deb https://artifacts.elastic.co/packages/8.x/apt
         state: absent
       when: ansible_os_family == 'Debian'
