@@ -1,0 +1,12 @@
+---
+## KER - 8/22/2022
+- name: Logi-Composer DB Unlock script
+  hosts: all
+  gather_facts: true
+  become: yes
+
+  tasks:
+    - name: attach to Logi Composer DB and kill locked fields
+      community.postgresql.postgresql_query:
+        db: zoomdata
+        query: UPDATE databasechangeloglock SET locked='false' WHERE locked='true';
