@@ -1,0 +1,12 @@
+---
+### KER - 8/8/2022
+- name: EDC Elasticsearch Integreation install
+  hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    env = {{ ENV }}
+
+  tasks:
+  - name: Docker-compose up -d to start redis service on each
+    ansible.builtin.command: /opt/redis/redis_{{ env }}/docker-compose up -d
