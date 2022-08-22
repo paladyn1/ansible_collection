@@ -10,6 +10,8 @@
       postgresql_query:
         db: zoomdata
         query: UPDATE databasechangeloglock SET locked='false' WHERE locked='true';
+      become_user: postgres
+      become: yes
 
     - name: restart Zoomdata services
       ansible.builtin.shell: /opt/zoomdata/bin/zdmanage services restart
