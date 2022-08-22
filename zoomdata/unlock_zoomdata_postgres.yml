@@ -11,5 +11,5 @@
         db: zoomdata
         query: UPDATE databasechangeloglock SET locked='false' WHERE locked='true';
 
-    - name: start Zoomdata services
+    - name: restart Zoomdata services
       ansible.builtin.shell: /opt/zoomdata/bin/zdmanage services restart
