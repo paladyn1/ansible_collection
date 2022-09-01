@@ -1,0 +1,49 @@
+---
+### KER - 9/01/2022
+###  Supports both RedHat and Debian linux kernel types.
+- name: Smart Drive Cleanup - Linux
+  hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+  - name: (General job) Truncating all logfiles in /var/log/*
+    ansible.builtin.command: truncate -s 0 /var/log/*/*.log
+
+  - name: (Docker Job 1) - Cleaning stale Docker images, cache, networks, and volumes.
+    community.docker.docker_prune:
+      containers: true
+      images: true
+      images_filters:
+        dangling: false
+      networks: true
+      volumes: true
+      builder_cache: true
+    when: "'docker' in services"
+
+  - name: (Docker Job 2) - Truncating all Docker logs.
+    ansible.builtin.command: truncate -s 0 /var/lib/docker/containers/*/*-json.log
+    when: "'docker' in services"
+
+  - name: (Elasticsearch Job part 1) - find all files that are older than 7 days in /var/log/elasticsearch
+    find:
+      paths: /var/log/elasticsearch/
+      age: 7d
+      recurse: yes
+    register: filesOlderThan7
+    when: "'elasticsearch' in services"
+      -
+  - name: (Elasticsearch Job part 2) - remove older than 7 days
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items: "{ { filesOlderThan7.files } }"
+    when: "'elasticsearch' in services"
+
+  - name: (RedHat Host) - Yum Repo/Cache Cleanup
+    ansible.builtin.command: yum clean all -y
+    when: ansible_os_family == 'RedHat'
+
+  - name: (Debian Hosts Host) - Apt-Get Repo/Cache Cleanup
+    ansible.builtin.command: apt-get clean -y
+    when: ansible_os_family == 'Debian'
