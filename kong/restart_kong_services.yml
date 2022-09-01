@@ -1,0 +1,9 @@
+## KER - 8/24/2022
+- name: Kong Restart
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+  - name: Run Kong Restart Script
+    ansible.builtin.script: /usr/local/bin/kong restart -c /etc/kong/kong.conf

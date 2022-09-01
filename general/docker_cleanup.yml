@@ -1,0 +1,17 @@
+---
+### KER - 9/01/2022
+- name: Garbage Collection - Docker Drive Cleanup
+  hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+  - name: Docker System Prune all trash on target server (including non-dangling images)
+    community.docker.docker_prune:
+      containers: true
+      images: true
+      images_filters:
+        dangling: false
+      networks: true
+      volumes: true
+      builder_cache: true
