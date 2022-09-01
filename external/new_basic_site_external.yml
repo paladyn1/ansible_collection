@@ -36,11 +36,11 @@
           regexp: '###port###'
           replace: "{{ port }}"
 
-    - name: Rename nginx_template.conf to _dns_clearsensecloud_com.conf
+    - name: Rename nginx_template.conf to _dns_fivefingerheadpat_com.conf
         ansible.builtin.copy:
           remote_src: true
           src: /etc/nginx/conf.d/nginx_template.conf
-          dest: /etc/nginx/conf.d/{{ dns }}_clearsensecloud_com.conf
+          dest: /etc/nginx/conf.d/{{ dns }}_fivefingerheadpat_com.conf
         when: check_file_name.stat.exists
 
     - name: Check to make sure nginx_tempalte.conf file is absent, and if not, removes it

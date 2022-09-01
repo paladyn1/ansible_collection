@@ -2,8 +2,8 @@ filebeat.inputs:
   - type: log
     enabled: true
     paths:
-      - /opt/zoomdata/logs/zoomdata-activity.log*
-      - /opt/zoomdata/logs/zoomdata-access.log*
+      - /opt/<tool>/logs/<tool>.log*
+      - /opt/<other_tool>/logs/<other_tool>.log*
 
     multiline.pattern: ^\[
     multiline.match: after
@@ -21,9 +21,8 @@ setup.kibana:
 #-------------------------- KAFKA OUTPUT --------------------------------------
 setup.template.enabled: false
 output.kafka:
-  hosts: ["pjx-vml-hdpm003.clearsense.local:6667","pjx-vml-hdpm004.clearsense.local:6667","pjx-vml-hdpm005.clearsense.local:6667"]
-  #hosts: ["tjx-vml-hdpm001.clearsense.local:6667", "tjx-vml-hdpm002.clearsense.local:6667", "tjx-vml-hdpm003.clearsense.local:6667"]
-  topic: "prod-visualize-###TENANT###"
+  hosts: ["kafka003.fivefingerheadpat.local:6667","kafka002.fivefingerheadpat.local:6667","kafka001.fivefingerheadpat.local:6667"]
+  topic: "prod-<your_topic_here>-###TENANT###"
   codec.json:
     pretty: true
 

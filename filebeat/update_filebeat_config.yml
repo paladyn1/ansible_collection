@@ -18,7 +18,7 @@
           dest: /etc/filebeat/filebeat.ansible_bkp
         when: check_file_name.stat.exists
 
-    - name: Coping new config file from pjx-vml-jenk001:/files to <target>:/etc/filebeat with needed owner and permissions
+    - name: Coping new config file from jenkins001:/files to <target>:/etc/filebeat with needed owner and permissions
       copy:
         src: /files/metribeat.yml
         dest: /etc/filebeat/filebeat.yml

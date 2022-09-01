@@ -1,6 +1,6 @@
 ---
 ### KER 8/18/2022 ###
-- name: Install Filebeat for Zoomdata Log Forwarding to Kafka Topics
+- name: Install Filebeat for Log Forwarding to Kafka Topics
   hosts: all
   become: true
   vars:

@@ -1,8 +1,8 @@
 cluster.name: ###NEW_CLUSTER###
 node.name: ###HOSTNAME###
 node.roles: [ ###ROLES### ]
-reindex.remote.whitelist: elasticsearch.clearsense.com:*, elasticsearch-test.clearsense.com:*, elasticsearch-dev.clearsense.com:*
-discovery.seed_hosts: [ "###MASTERNODE1###.clearsense.com", "###MASTERNODE2###.clearsense.com", "###HOTDATANODE1###.clearsense.com", "pjx-vml-elkd002.clearsense.com", "pjx-vml-elkdw01.clearsense.com", "pjx-vml-elkdw02.clearsense.com", "pjx-vml-elkdf01.clearsense.com", "pjx-vml-elkdf02.clearsense.com", "pjx-vml-elkml01.clearsense.com" ]
+reindex.remote.whitelist: elasticsearch.fivefingerheadpat.com:*, elasticsearch-test.fivefingerheadpat.com:*, elasticsearch-dev.fivefingerheadpat.com:*
+discovery.seed_hosts: [ "###MASTERNODE1###.fivefingerheadpat.com", "###MASTERNODE2###.fivefingerheadpat.com", "###HOTDATANODE1###.fivefingerheadpat.com", "pjx-vml-elkd002.fivefingerheadpat.com", "pjx-vml-elkdw01.fivefingerheadpat.com", "pjx-vml-elkdw02.fivefingerheadpat.com", "pjx-vml-elkdf01.fivefingerheadpat.com", "pjx-vml-elkdf02.fivefingerheadpat.com", "pjx-vml-elkml01.fivefingerheadpat.com" ]
 cluster.initial_master_nodes: ["###MASTERNODE1###", "###MASTERNODE2###", "###MASTERNODE3###"]
 gateway.recover_after_data_nodes: 3
 path.data: /var/lib/elasticsearch
@@ -11,10 +11,10 @@ xpack.ml.enabled: false
 xpack.security.transport.ssl.enabled: true
 xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.client_authentication: none
-xpack.security.transport.ssl.certificate: /etc/elasticsearch/wildcard-clearsense_com.bundle.crt
-xpack.security.transport.ssl.key: /etc/elasticsearch/wildcard-clearsense_com.key
-xpack.security.http.ssl.key: /etc/elasticsearch/wildcard-clearsense_com.key
-xpack.security.http.ssl.certificate: /etc/elasticsearch/wildcard-clearsense_com.bundle.crt
+xpack.security.transport.ssl.certificate: /etc/elasticsearch/wildcard-fivefingerheadpat_com.bundle.crt
+xpack.security.transport.ssl.key: /etc/elasticsearch/wildcard-fivefingerheadpat_com.key
+xpack.security.http.ssl.key: /etc/elasticsearch/wildcard-fivefingerheadpat_com.key
+xpack.security.http.ssl.certificate: /etc/elasticsearch/wildcard-fivefingerheadpat_com.bundle.crt
 xpack.security.http.ssl.supported_protocols: [ "TLSv1.2", "TLSv1.1", "TLSv1" ]
 xpack.security.http.ssl.enabled: true
 xpack.security.enabled: true

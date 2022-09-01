@@ -8,5 +8,5 @@
   tasks:
     - name: Removes wildcard_clearsense_com.bundle.old from /etc/nginx/ssl/
       file:
-        path: /etc/nginx/ssl/wildcard_clearsensecloud_com.bundle.old
+        path: /etc/nginx/ssl/wildcard_fivefingerheadpat_com.bundle.old
         state: absent
